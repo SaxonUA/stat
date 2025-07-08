@@ -16,7 +16,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 1rem;
-      display: none; /* початково приховано */
+      /* display: none;  початково приховано */
       justify-content: flex-start;
       align-items: flex-start;
       height: 100vh;
@@ -75,6 +75,7 @@
   </div>
 
   <script>
+    const MY_PLAYER_ID = 595216257;
     const damageEl = document.getElementById("damage-value");
     const assistEl = document.getElementById("assist-value");
     const healthEl = document.getElementById("health-value");
@@ -85,16 +86,6 @@
 
     let totalDamage = 0;
     let totalAssist = 0;
-
-    function resetStats() {
-      totalDamage = 0;
-      totalAssist = 0;
-      damageEl.textContent = "0";
-      assistEl.textContent = "0";
-      healthEl.textContent = "0";
-      tankNameEl.textContent = "-";
-      mapNameEl.textContent = "-";
-    }
 
     ws.onopen = () => console.log("✅ WebSocket підключено");
     ws.onerror = (err) => console.error("❌ WebSocket помилка", err);
@@ -128,9 +119,6 @@
               break;
             case 'hangar.isInHangar':
               document.body.style.display = payload.value ? 'none' : 'flex';
-              if (payload.value === true) {
-                resetStats();
-              }
               break;
           }
         }
@@ -139,9 +127,12 @@
           const data = payload.value;
 
           if (payload.path === 'battle.onDamage') {
-            console.log("⬇️ Отримано дамаг:", data);
-            totalDamage += data.damage || 0;
-            damageEl.textContent = totalDamage;
+            const attacker = data.attacker;
+            if (attacker && attacker.playerId === MY_PLAYER_ID) {
+              console.log("⬇️ Мій урон:", data);
+              totalDamage += data.damage || 0;
+              damageEl.textContent = totalDamage;
+            }
           }
         }
       } catch (e) {
