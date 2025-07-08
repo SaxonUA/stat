@@ -5,7 +5,7 @@
   <title>Віджет бою</title>
   <style>
     :root {
-      --bg-color: rgba(0, 0, 0, 0.0);
+      --bg-color: rgba(0, 0, 0, 0.8);
       --text-color: #ffffff;
       --glow-color: #00ff00;
     }
@@ -15,7 +15,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 1rem;
-    /*  display: none;  початково приховано */
+     /* display: none;  початково приховано */
       justify-content: flex-start;
       align-items: flex-start;
       height: 100vh;
@@ -25,7 +25,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 1rem;
+      gap: 0.3rem;
       font-size: 1.2rem;
       font-weight: bold;
     }
@@ -55,11 +55,7 @@
       <div id="map-name" class="stat-value">-</div>
     </div>
     <div class="stat-block">
-      <div class="stat-label">Макс. ХП:</div>
-      <div id="max-health" class="stat-value">0</div>
-    </div>
-    <div class="stat-block">
-      <div class="stat-label">Мій танк:</div>
+      <div class="stat-label">Танк:</div>
       <div id="tank-name" class="stat-value">-</div>
     </div>
     <div class="stat-block">
@@ -71,9 +67,10 @@
       <div id="assist-value" class="stat-value">0</div>
     </div>
     <div class="stat-block">
-      <div class="stat-label">Здоров'я:</div>
+      <div class="stat-label">ХП Танку:</div>
       <div id="health-value" class="stat-value">0</div>
     </div>
+   
   </div>
 
   <script>
