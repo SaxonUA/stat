@@ -8,7 +8,7 @@
     :root {
       --bg-color: rgba(0, 0, 0, 0.0);
       --text-color: #ffffff;
-      --glow-color: #ffa500; /* помаранчовий */
+      --glow-color: #ffa500;
     }
     body {
       background: var(--bg-color);
@@ -16,7 +16,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 1rem;
-      display: none; /* початково приховано */
+      display: none; /* Початково приховано */
       justify-content: flex-start;
       align-items: flex-start;
       height: 100vh;
@@ -75,6 +75,7 @@
   </div>
 
   <script>
+    const MY_PLAYER_ID = 595514387;
     const damageEl = document.getElementById("damage-value");
     const assistEl = document.getElementById("assist-value");
     const healthEl = document.getElementById("health-value");
@@ -85,16 +86,10 @@
 
     let totalDamage = 0;
     let totalAssist = 0;
-    let inBattle = false;
 
-    function resetStats() {
-      totalDamage = 0;
-      totalAssist = 0;
-      damageEl.textContent = "0";
-      assistEl.textContent = "0";
-      healthEl.textContent = "0";
-      tankNameEl.textContent = "-";
-      mapNameEl.textContent = "-";
+    // Функція форматування чисел
+    function formatNum(num) {
+      return Number(num).toLocaleString('uk-UA');
     }
 
     ws.onopen = () => console.log("✅ WebSocket підключено");
@@ -111,7 +106,7 @@
         if (payload.type === 'state') {
           switch (payload.path) {
             case 'battle.health':
-              healthEl.textContent = payload.value;
+              healthEl.textContent = formatNum(payload.value);
               break;
             case 'battle.vehicle':
               if (payload.value?.localizedShortName) {
@@ -125,17 +120,20 @@
               break;
             case 'battle.efficiency.assist':
               totalAssist = payload.value;
-              assistEl.textContent = totalAssist;
+              assistEl.textContent = formatNum(totalAssist);
               break;
             case 'hangar.isInHangar':
               const inHangar = payload.value;
               document.body.style.display = inHangar ? 'none' : 'flex';
-              if (!inHangar && !inBattle) {
-                resetStats();
-                inBattle = true;
-              }
+
               if (inHangar) {
-                inBattle = false;
+                totalDamage = 0;
+                totalAssist = 0;
+                damageEl.textContent = '0';
+                assistEl.textContent = '0';
+                healthEl.textContent = '0';
+                tankNameEl.textContent = '-';
+                mapNameEl.textContent = '-';
               }
               break;
           }
@@ -145,9 +143,12 @@
           const data = payload.value;
 
           if (payload.path === 'battle.onDamage') {
-            console.log("⬇️ Отримано дамаг:", data);
-            totalDamage += data.damage || 0;
-            damageEl.textContent = totalDamage;
+            const attacker = data.attacker;
+            if (attacker && attacker.playerId === MY_PLAYER_ID) {
+              console.log("⬇️ Мій урон:", data);
+              totalDamage += data.damage || 0;
+              damageEl.textContent = formatNum(totalDamage);
+            }
           }
         }
       } catch (e) {
