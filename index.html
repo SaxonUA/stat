@@ -75,7 +75,6 @@
   </div>
 
   <script>
-    const MY_PLAYER_ID = 595216257;
     const damageEl = document.getElementById("damage-value");
     const assistEl = document.getElementById("assist-value");
     const healthEl = document.getElementById("health-value");
@@ -140,12 +139,9 @@
           const data = payload.value;
 
           if (payload.path === 'battle.onDamage') {
-            const attacker = data.attacker;
-            if (attacker && attacker.playerId === MY_PLAYER_ID) {
-              console.log("⬇️ Мій урон:", data);
-              totalDamage += data.damage || 0;
-              damageEl.textContent = totalDamage;
-            }
+            console.log("⬇️ Отримано дамаг:", data);
+            totalDamage += data.damage || 0;
+            damageEl.textContent = totalDamage;
           }
         }
       } catch (e) {
